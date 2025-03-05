@@ -1,11 +1,13 @@
-'use client';  
-import React, { useState } from 'react';
+'use client';
 
+import React, { useState, useEffect } from 'react';
+
+// Rest of your code follows...
 export default function Home() {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
   const [removedCards, setRemovedCards] = useState<Set<number>>(new Set()); 
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-
+  const [displayedCards, setDisplayedCards] = useState<number[]>([]); // Track the 5 displayed cards
 
   const images = [
     '/images/c1.png', 
@@ -20,7 +22,6 @@ export default function Home() {
     '/images/c10.png', 
   ];
 
-
   const selectedImages = [
     '/images/c1-selected.png', 
     '/images/c2-selected.png', 
@@ -34,6 +35,27 @@ export default function Home() {
     '/images/c10-selected.png', 
   ];
 
+  useEffect(() => {
+    // Select 5 random cards when the component is mounted or when cards are removed
+    const availableCards = [...Array(images.length).keys()].filter(
+      (index) => !removedCards.has(index)
+    );
+
+    // Only select 5 cards if less than 5 cards are displayed
+    if (displayedCards.length === 0 && availableCards.length > 0) {
+      const randomCards = shuffle(availableCards).slice(0, 5); // Shuffle and get the first 5 cards
+      setDisplayedCards(randomCards);
+    }
+  }, [removedCards, displayedCards.length]);
+
+  // Utility function to shuffle the array
+  const shuffle = (array: number[]) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
+    return array;
+  };
 
   const handleCardClick = (index: number) => {
     if (selectedCardIndex === null && !removedCards.has(index)) {
@@ -41,21 +63,21 @@ export default function Home() {
     }
   };
 
-
   const closeCard = () => {
-    setRemovedCards((prev) => new Set(prev).add(selectedCardIndex!)); 
-    setSelectedCardIndex(null); 
+    if (selectedCardIndex !== null) {
+      setRemovedCards((prev) => new Set(prev).add(selectedCardIndex)); 
+      setSelectedCardIndex(null);
+    }
   };
-
 
   const checkAllCardsRemoved = () => {
     return removedCards.size === images.length;
   };
 
-
   const handleRestart = () => {
     setRemovedCards(new Set()); 
     setIsPopupVisible(false);
+    setDisplayedCards([]); // Reset the displayed cards
   };
 
   const deckStyle = {
@@ -68,7 +90,6 @@ export default function Home() {
     position: 'relative', 
   };
 
- 
   const overlayStyle = {
     position: 'absolute', 
     top: 0,
@@ -105,7 +126,6 @@ export default function Home() {
     backgroundRepeat: 'no-repeat',
   });
 
-
   const closeButtonStyle = {
     position: 'absolute',
     top: '10px',
@@ -122,7 +142,6 @@ export default function Home() {
     fontSize: '18px',
     color: '#333',
   };
-
 
   const popupStyle = {
     position: 'fixed',
@@ -148,11 +167,10 @@ export default function Home() {
 
   return (
     <div style={deckStyle}>
-   
       <div style={overlayStyle}></div>
 
-      {images.map((imageUrl, index) => {
-  
+      {displayedCards.map((index) => {
+        // Skip rendering the card if it is removed
         if (removedCards.has(index)) {
           return null;
         }
@@ -174,7 +192,7 @@ export default function Home() {
           </div>
         );
       })}
-      
+
       {checkAllCardsRemoved() && !isPopupVisible && (
         <div style={popupStyle}>
           <h2>All cards are gone!</h2>
@@ -187,7 +205,6 @@ export default function Home() {
     </div>
   );
 }
-
 
 const style = `
 @keyframes spinVertical {
