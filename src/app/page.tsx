@@ -34,23 +34,6 @@ export default function Home() {
     '/images/c10-selected.png',
   ];
 
-  useEffect(() => {
-    const availableCards = [...Array(images.length).keys()].filter(
-      (index) => !removedCards.has(index)
-    );
-
-    // Show pop-up when all 5 cards are removed
-    if (availableCards.length === 0 && !isPopupVisible) {
-      setIsPopupVisible(true);
-    }
-
-    // If displayed cards are empty, select 5 random cards from the available ones
-    if (displayedCards.length === 0 && availableCards.length > 0) {
-      const randomCards = shuffle(availableCards).slice(0, 5);
-      setDisplayedCards(randomCards);
-    }
-  }, [removedCards, displayedCards.length, isPopupVisible]);
-
   const shuffle = (array: number[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -58,6 +41,25 @@ export default function Home() {
     }
     return array;
   };
+
+  // Effect to manage displaying cards and showing popup when all are removed
+  useEffect(() => {
+    // Filter out removed cards
+    const availableCards = [...Array(images.length).keys()].filter(
+      (index) => !removedCards.has(index)
+    );
+
+    // Show popup when all cards are removed
+    if (availableCards.length === 0 && !isPopupVisible) {
+      setIsPopupVisible(true);
+    }
+
+    // If no cards are displayed, show 5 random cards
+    if (displayedCards.length === 0 && availableCards.length > 0) {
+      const randomCards = shuffle(availableCards).slice(0, 5);
+      setDisplayedCards(randomCards);
+    }
+  }, [removedCards, displayedCards.length, isPopupVisible]);
 
   const handleCardClick = (index: number) => {
     if (selectedCardIndex === null && !removedCards.has(index)) {
@@ -75,7 +77,7 @@ export default function Home() {
   const handleRestart = () => {
     setRemovedCards(new Set()); // Clear removed cards
     setDisplayedCards([]); // Reset displayed cards
-    setIsPopupVisible(false); // Hide the pop-up
+    setIsPopupVisible(true); // Hide the pop-up
   };
 
   const deckStyle = {
@@ -167,6 +169,7 @@ export default function Home() {
     <div style={deckStyle}>
       <div style={overlayStyle}></div>
 
+      {/* Render cards */}
       {displayedCards.map((index) => {
         if (removedCards.has(index)) return null; // Skip removed cards
 
