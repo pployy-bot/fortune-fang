@@ -1,105 +1,101 @@
-'use client';  // This marks the file as a client-side component
-
+'use client';  
 import React, { useState } from 'react';
 
 export default function Home() {
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(null);
-  const [removedCards, setRemovedCards] = useState<Set<number>>(new Set()); // Track removed cards
-  const [isPopupVisible, setIsPopupVisible] = useState(false); // Track popup visibility
+  const [removedCards, setRemovedCards] = useState<Set<number>>(new Set()); 
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-  // Image URLs for the cards
+
   const images = [
-    '/images/c1.png', // Example image 1 (unselected)
-    '/images/c2.png', // Example image 2 (unselected)
-    '/images/c3.png', // Example image 3 (unselected)
-    '/images/c4.png', // Example image 4 (unselected)
-    '/images/c5.png', // Example image 5 (unselected)
+    '/images/c1.png', 
+    '/images/c2.png', 
+    '/images/c3.png', 
+    '/images/c4.png', 
+    '/images/c5.png', 
   ];
 
-  // Image URLs for the selected state (you can replace these with your images for selected states)
+
   const selectedImages = [
-    '/images/c1-selected.png', // Selected image for card 1
-    '/images/c2-selected.png', // Selected image for card 2
-    '/images/c3-selected.png', // Selected image for card 3
-    '/images/c4-selected.png', // Selected image for card 4
-    '/images/c5-selected.png', // Selected image for card 5
+    '/images/c1-selected.png', 
+    '/images/c2-selected.png', 
+    '/images/c3-selected.png', 
+    '/images/c4-selected.png', 
+    '/images/c5-selected.png', 
   ];
 
-  // Handle card click (select and unselect)
+
   const handleCardClick = (index: number) => {
-    // Only allow selection if no card has been selected yet
     if (selectedCardIndex === null && !removedCards.has(index)) {
-      setSelectedCardIndex(index); // Select the card
+      setSelectedCardIndex(index);
     }
   };
 
-  // Close the selected card (unselect it) and remove it
+
   const closeCard = () => {
-    setRemovedCards((prev) => new Set(prev).add(selectedCardIndex!)); // Mark the card as removed
-    setSelectedCardIndex(null); // Unselect the card
+    setRemovedCards((prev) => new Set(prev).add(selectedCardIndex!)); 
+    setSelectedCardIndex(null); 
   };
 
-  // Check if all cards are removed
+
   const checkAllCardsRemoved = () => {
     return removedCards.size === images.length;
   };
 
-  // Show the popup when all cards are removed
+
   const handleRestart = () => {
-    setRemovedCards(new Set()); // Clear removed cards
-    setIsPopupVisible(false); // Close the popup
+    setRemovedCards(new Set()); 
+    setIsPopupVisible(false);
   };
 
-  // Main container styling (deck) for the entire view
   const deckStyle = {
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '100%',
-    height: '100vh', // Full viewport height (to cover the entire monitor)
+    height: '100vh', 
     overflow: 'hidden',
-    position: 'relative', // Set position to relative for the overlay positioning
+    position: 'relative', 
   };
 
-  // Dark overlay styling
+ 
   const overlayStyle = {
-    position: 'absolute', // Overlay sits on top of the background
+    position: 'absolute', 
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundImage: 'url(/images/bg.png)', // Set background image for the whole container
+    backgroundImage: 'url(/images/bg.png)', 
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    opacity: 0.6, // Adjust opacity to make the background darker
-    zIndex: -1, // Ensure the overlay is behind the cards
+    opacity: 0.6, 
+    zIndex: -1, 
   };
 
-  // Card styling based on selection state
   const cardStyle = (isSelected: boolean, index: number, isUnselectable: boolean) => ({
-    width: '250px',  // Normal card width (approx. 2.5 inches)
-    height: '350px', // Normal card height (approx. 3.5 inches)
-    borderRadius: '10px', // Slight rounding of corners
-    cursor: isUnselectable ? 'not-allowed' : 'pointer', // Disable cursor if unselectable
-    opacity: isUnselectable ? 0.5 : 1,  // Dim card if unselectable
+    width: '250px',  
+    height: '350px', 
+    borderRadius: '10px', 
+    cursor: isUnselectable ? 'not-allowed' : 'pointer', 
+    opacity: isUnselectable ? 0.5 : 1, 
     transition: 'transform 0.3s ease, z-index 0.2s, opacity 0.3s ease',
-    transform: isSelected ? 'scale(1.5)' : 'scale(1)',  // Zoom in when selected
-    zIndex: isSelected ? 10 : 1, // Bring selected card to the front
-    position: isSelected ? 'absolute' : 'relative', // Center card when selected
-    top: isSelected ? '50%' : 'auto', // Center vertically
-    left: isSelected ? '50%' : 'auto', // Center horizontally
+    transform: isSelected ? 'scale(1.5)' : 'scale(1)',
+    zIndex: isSelected ? 10 : 1, 
+    position: isSelected ? 'absolute' : 'relative',
+    top: isSelected ? '50%' : 'auto', 
+    left: isSelected ? '50%' : 'auto', 
     transform: isSelected
-      ? 'scale(1.5) translate(-50%, -50%)'  // Zoom and center when selected
-      : 'scale(1)', // Normal size when unselected
-    animation: isSelected ? 'none' : 'spinVertical 2s linear infinite', // Apply vertical spinning animation to unselected cards
-    backgroundImage: `url(${isSelected ? selectedImages[index] : images[index]})`, // Update image if selected
-    backgroundSize: 'cover', // Ensure the background image covers the card
-    backgroundPosition: 'center', // Center the image
-    backgroundRepeat: 'no-repeat', // Do not repeat the image
+      ? 'scale(1.5) translate(-50%, -50%)'  
+      : 'scale(1)', 
+    animation: isSelected ? 'none' : 'spinVertical 2s linear infinite', 
+    backgroundImage: `url(${isSelected ? selectedImages[index] : images[index]})`, 
+    backgroundSize: 'cover',
+    backgroundPosition: 'center', 
+    backgroundRepeat: 'no-repeat',
   });
 
-  // Close button style
+
   const closeButtonStyle = {
     position: 'absolute',
     top: '10px',
@@ -117,7 +113,7 @@ export default function Home() {
     color: '#333',
   };
 
-  // Popup styling
+
   const popupStyle = {
     position: 'fixed',
     top: '50%',
@@ -142,22 +138,22 @@ export default function Home() {
 
   return (
     <div style={deckStyle}>
-      {/* Dark overlay */}
+   
       <div style={overlayStyle}></div>
 
       {images.map((imageUrl, index) => {
-        // Skip rendering the card if it is removed
+  
         if (removedCards.has(index)) {
           return null;
         }
 
         const isSelected = selectedCardIndex === index;
-        const isUnselectable = selectedCardIndex !== null && !isSelected; // Unselectable if a card is selected
+        const isUnselectable = selectedCardIndex !== null && !isSelected; 
 
         return (
           <div
             key={index}
-            onDoubleClick={() => handleCardClick(index)}  // Only allow selecting a card if none is selected
+            onDoubleClick={() => handleCardClick(index)}  
             style={cardStyle(isSelected, index, isUnselectable)}
           >
             {isSelected && (
@@ -182,7 +178,7 @@ export default function Home() {
   );
 }
 
-// Add CSS for the spinning animation (vertical spin)
+
 const style = `
 @keyframes spinVertical {
   0% {
