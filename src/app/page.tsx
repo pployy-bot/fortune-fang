@@ -13,6 +13,11 @@ export default function Home() {
     '/images/c3.png', 
     '/images/c4.png', 
     '/images/c5.png', 
+    '/images/c6.png', 
+    '/images/c7.png', 
+    '/images/c8.png', 
+    '/images/c9.png', 
+    '/images/c10.png', 
   ];
 
 
@@ -22,6 +27,11 @@ export default function Home() {
     '/images/c3-selected.png', 
     '/images/c4-selected.png', 
     '/images/c5-selected.png', 
+    '/images/c6-selected.png', 
+    '/images/c7-selected.png', 
+    '/images/c8-selected.png', 
+    '/images/c9-selected.png', 
+    '/images/c10-selected.png', 
   ];
 
 
